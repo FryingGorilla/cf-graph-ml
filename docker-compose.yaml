@@ -1,0 +1,34 @@
+services:
+  cf-graph-ml:
+    build:
+      context: .
+      args:
+        - BASE_IMAGE=${BASE_IMAGE:-pytorch/pytorch:latest}
+    image: cf-graph-ml-image:dev
+    container_name: cf-graph-ml-container
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+
+    devices:
+      - "${AMD_KFD:-/dev/null}:/dev/kfd"
+      - "${AMD_DRI:-/dev/null}:/dev/dri"
+    group_add:
+      - ${GPU_GROUP:-root}
+    environment:
+      - HF_TOKEN=${HF_TOKEN:-}
+  
+  # NVIDIA EXTENSION
+  cf-graph-ml-nvidia:
+    extends: cf-graph-ml
+    profiles: ["nvidia"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

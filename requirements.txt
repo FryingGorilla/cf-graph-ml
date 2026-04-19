@@ -1,0 +1,11 @@
+dotenv
+requests
+polars
+numpy
+scikit-learn
+jupyterlab
+notebook
+ipykernel
+torch
+huggingface_hub
+datasets
