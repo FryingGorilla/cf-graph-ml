@@ -6,6 +6,6 @@ scikit-learn
 jupyterlab
 notebook
 ipykernel
-torch
 huggingface_hub
 datasets
+torch-geometric

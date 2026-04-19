@@ -4,6 +4,7 @@ services:
       context: .
       args:
         - BASE_IMAGE=${BASE_IMAGE:-pytorch/pytorch:latest}
+        - USE_ROCM=${USE_ROCM:-false}
     image: cf-graph-ml-image:dev
     container_name: cf-graph-ml-container
     ports:

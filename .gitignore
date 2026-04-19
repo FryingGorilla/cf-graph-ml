@@ -19,6 +19,7 @@ Thumbs.db
 # VS Code
 .vscode/
 
+models/
 data/
 proxylist.txt
 .env
