@@ -1,0 +1,28 @@
+FROM rocm/pytorch:rocm7.1.1_ubuntu24.04_py3.13_pytorch_release_2.10.0
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libomp5 \
+    libomp-dev \
+    && rm -rf /var/lib/apt/lists/*
+RUN ln -s $(find /usr/lib -name "libomp.so" | head -n 1) /usr/lib/x86_64-linux-gnu/libomp.so || true
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get install -y wget unzip
+RUN wget https://github.com/Looong01/pyg-rocm-build/releases/download/15/torch-2.10.0-rocm-7.1-py313-linux_x86_64.zip -O pyg-rocm-build.zip \
+    && unzip pyg-rocm-build.zip \
+    && find . -name "*.whl" -exec pip install --no-cache-dir {} + \
+    && rm -rf pyg-rocm-build*
+
+COPY . .
+
+EXPOSE 8888
+
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
